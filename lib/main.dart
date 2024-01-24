@@ -1,4 +1,3 @@
-
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -54,6 +53,13 @@ class MyAppState extends ChangeNotifier {
 
   void removeFavorite(WordPair pair) {
     favorites.remove(pair);
+    notifyListeners();
+  }
+
+  String username = '';
+
+  void setUserName(String name) {
+    username = name;
     notifyListeners();
   }
 }
@@ -254,6 +260,14 @@ class FavoritesPage extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Center(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0,30,0,0),
+            child: Text(
+              'Welcome, ${appState.username}!',
+            ),
+          ),
+        ),
         Padding(
           padding: const EdgeInsets.all(30),
           child: Text('You have '
@@ -366,12 +380,46 @@ class _HistoryListViewState extends State<HistoryListView> {
 }
 
 class LoginPage extends StatelessWidget {
+  final TextEditingController _usernameController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
 
-    return Center(
-      child: Text("NO Login"),
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 200,
+            child: TextField(
+              controller: _usernameController,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'Enter your username',
+              ),
+            ),
+          ),
+          SizedBox(height: 16),
+          ElevatedButton(
+            onPressed: () {
+              String username = _usernameController.text.trim();
+              appState.setUserName(username);
+            },
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            ),
+            child: Text(
+              'Login',
+              style: TextStyle(fontSize: 18),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -436,4 +484,3 @@ class InputPage extends StatelessWidget {
     );
   }
 }
-
