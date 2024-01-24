@@ -122,7 +122,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       label: Text('Favorites'),
                     ),
                     NavigationRailDestination(
-                      icon: Icon(Icons.input),
+                      icon: Icon(Icons.textsms),
                       label: Text('Input'),
                     ),
                     NavigationRailDestination(
@@ -164,6 +164,16 @@ class GeneratorPage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
+            child: Text(
+              'Welcome, ${appState.username}!',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
           Expanded(
             flex: 3,
             child: HistoryListView(),
@@ -262,9 +272,13 @@ class FavoritesPage extends StatelessWidget {
       children: [
         Center(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(0,30,0,0),
+            padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
             child: Text(
               'Welcome, ${appState.username}!',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ),
@@ -432,55 +446,63 @@ class InputPage extends StatelessWidget {
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
 
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 200, // Set a specific width for the text field
-            child: TextField(
-              controller: _textEditingController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'First word',
-              ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
+          child: Text(
+            'Welcome, ${appState.username}!',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 16),
-          Container(
-            width: 200, // Set a specific width for the text field
-            child: TextField(
-              controller: _textEditingController2,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Second word',
-              ),
+        ),
+        SizedBox(height: 20),
+        Container(
+          width: 200,
+          child: TextField(
+            controller: _textEditingController,
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              hintText: 'First word',
             ),
           ),
-          SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: () {
-              String searchText1 = _textEditingController.text.trim();
-              String searchText2 = _textEditingController2.text.trim();
+        ),
+        SizedBox(height: 16),
+        Container(
+          width: 200,
+          child: TextField(
+            controller: _textEditingController2,
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              hintText: 'Second word',
+            ),
+          ),
+        ),
+        SizedBox(height: 16),
+        ElevatedButton(
+          onPressed: () {
+            String searchText1 = _textEditingController.text.trim();
+            String searchText2 = _textEditingController2.text.trim();
 
-              if (searchText1.isNotEmpty && searchText2.isNotEmpty) {
-                appState.favorites.add(WordPair(searchText1, searchText2));
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            if (searchText1.isNotEmpty && searchText2.isNotEmpty) {
+              appState.favorites.add(WordPair(searchText1, searchText2));
+            }
+          },
+          style: ElevatedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
             ),
-            child: Text(
-              'Submit',
-              style: TextStyle(fontSize: 18),
-            ),
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           ),
-        ],
-      ),
+          child: Text(
+            'Submit',
+            style: TextStyle(fontSize: 18),
+          ),
+        ),
+      ],
     );
   }
 }
