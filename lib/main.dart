@@ -62,6 +62,16 @@ class MyAppState extends ChangeNotifier {
     username = name;
     notifyListeners();
   }
+
+  String getUser() {
+    return username;
+  }
+
+  void resetUser() {
+    history = <WordPair>[];
+    favorites = <WordPair>[];
+    notifyListeners();
+  }
 }
 
 class MyHomePage extends StatefulWidget {
@@ -75,6 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     var colorScheme = Theme.of(context).colorScheme;
+    var appState = context.watch<MyAppState>();
 
     Widget page;
     switch (selectedIndex) {
@@ -90,6 +101,10 @@ class _MyHomePageState extends State<MyHomePage> {
       case 3:
         page = LoginPage();
         break;
+      case 4:
+        page = LoginPage();
+        appState.resetUser();
+        appState.setUserName('');
       default:
         throw UnimplementedError('no widget for $selectedIndex');
     }
@@ -122,12 +137,16 @@ class _MyHomePageState extends State<MyHomePage> {
                       label: Text('Favorites'),
                     ),
                     NavigationRailDestination(
-                      icon: Icon(Icons.textsms),
+                      icon: Icon(Icons.input),
                       label: Text('Input'),
                     ),
                     NavigationRailDestination(
                       icon: Icon(Icons.login),
                       label: Text('Login'),
+                    ),
+                    NavigationRailDestination(
+                      icon: Icon(Icons.logout),
+                      label: Text('Logout'),
                     ),
                   ],
                   selectedIndex: selectedIndex,
@@ -160,6 +179,21 @@ class GeneratorPage extends StatelessWidget {
       icon = Icons.favorite_border;
     }
 
+    if (appState.getUser() == '') {
+      return Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0, 100, 0, 0),
+          child: Text(
+            'Please login to use the app!',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ]);
+    }
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -175,7 +209,7 @@ class GeneratorPage extends StatelessWidget {
             ),
           ),
           Expanded(
-            flex: 3,
+            flex: 2,
             child: HistoryListView(),
           ),
           SizedBox(height: 10),
@@ -261,10 +295,40 @@ class FavoritesPage extends StatelessWidget {
     var theme = Theme.of(context);
     var appState = context.watch<MyAppState>();
 
+    if (appState.getUser() == '') {
+      return Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0, 100, 0, 0),
+          child: Text(
+            'Please login to use the app!',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ]);
+    }
+
     if (appState.favorites.isEmpty) {
-      return Center(
-        child: Text('No favorites yet.'),
-      );
+      return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Center(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
+            child: Text(
+              'Welcome, ${appState.username}!',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+        SizedBox(height: 30),
+        Center(
+          child: Text('No favorites yet.'),
+        )
+      ]);
     }
 
     return Column(
@@ -419,7 +483,10 @@ class LoginPage extends StatelessWidget {
           ElevatedButton(
             onPressed: () {
               String username = _usernameController.text.trim();
-              appState.setUserName(username);
+              if (username != appState.getUser()) {
+                appState.setUserName(username);
+                appState.resetUser();
+              }
             },
             style: ElevatedButton.styleFrom(
               shape: RoundedRectangleBorder(
@@ -432,6 +499,7 @@ class LoginPage extends StatelessWidget {
               style: TextStyle(fontSize: 18),
             ),
           ),
+          Placeholder(),
         ],
       ),
     );
@@ -445,6 +513,21 @@ class InputPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
+
+    if (appState.getUser() == '') {
+      return Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0, 100, 0, 0),
+          child: Text(
+            'Please login to use the app!',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ]);
+    }
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
